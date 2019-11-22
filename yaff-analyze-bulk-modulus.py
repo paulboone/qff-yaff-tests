@@ -21,7 +21,7 @@ p_unit = 1e6*pascal
 e_unit = electronvolt
 
 # Transform your data into arrays:
-v, p, e = data.T
+v, p, e = data[:,0:3].T
 p *= p_unit
 v *= v_unit
 e *= e_unit

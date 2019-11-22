@@ -27,7 +27,7 @@ ff_file = 'pars_yaff_mbisgauss.txt'
 pressures = np.linspace(-1000, 2000, 31, endpoint=True)
 print(pressures)
 
-results = np.zeros((len(pressures), 3), dtype=np.float32)
+results = np.zeros((len(pressures), 12), dtype=np.float32)
 
 for i, p in enumerate(pressures):
     system = System.from_file(chk_file)
@@ -41,9 +41,11 @@ for i, p in enumerate(pressures):
     opt.run(2000)
 
     system.to_file('results/opt%d.chk' % p)
-    system.to_file('results/opt%d.xyz' % p )
-    system.to_file('results/opt%d.cif' % p )
-    results[i, :] = (system.cell.volume/angstrom**3, ff.part_press.pext/p_unit, ff.energy/e_unit)
+    system.to_file('results/opt%d.xyz' % p)
+
+    print(p, system.cell.rvecs)
+    results[i, :] = [system.cell.volume/angstrom**3, ff.part_press.pext/p_unit,
+                    ff.energy/e_unit] + list(system.cell.rvecs.flatten())
 
 print(results)
 np.savetxt("results/vpe_results.txt", results)
